@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f8f7ee">
+<meta name="description" content="오이반의 다정한 3D 비밀정원. 아홉 개의 작은 공간에서 놀고 쉬고 마음을 돌보아요.">
+<title>온라인 오이반 월드 | 우리만의 작은 정원</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap');
+:root{--forest:#315d43;--ink:#3b5043;--sage:#688b71;--pale:#e8f1df;--cream:#fffaf0;--glass:rgba(255,253,247,.92);--shadow:0 16px 52px rgba(47,74,52,.14)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#e3f0e4;color:var(--ink);font-family:'Noto Sans KR',system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible{outline:3px solid #80b99c;outline-offset:3px}
+#three{position:fixed;inset:0;z-index:0}#three canvas{width:100%;height:100%;display:block;touch-action:none}
+.ui{position:fixed;inset:0;z-index:5;pointer-events:none}.ui>*{pointer-events:auto}
+.brand{position:absolute;top:22px;left:24px;padding:15px 19px 15px 17px;background:var(--glass);border:1px solid #fff;border-radius:23px;box-shadow:var(--shadow);backdrop-filter:blur(16px);max-width:330px}
+.brand .over{display:flex;align-items:center;gap:7px;font:900 10px Nunito,sans-serif;letter-spacing:2.1px;color:#7fa78b}.brand h1{font-size:20px;letter-spacing:-.6px;margin:4px 0}.brand p{font-size:11px;color:#77917c;margin:0}
+.toolbar{position:absolute;right:20px;top:22px;display:flex;gap:7px}.iconbtn{width:43px;height:43px;display:grid;place-items:center;border:1px solid white;background:var(--glass);border-radius:15px;box-shadow:0 5px 20px #476e5420;font-size:18px}.iconbtn:hover{background:white;transform:translateY(-1px)}
+.sidebar{position:absolute;left:24px;top:139px;bottom:23px;width:231px;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+.rail{padding:13px 11px;background:var(--glass);backdrop-filter:blur(16px);border:1px solid #fff;border-radius:22px;box-shadow:var(--shadow);min-height:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#bdd1be transparent;flex:1}
+.rail h2{font-size:11px;letter-spacing:.5px;padding:2px 9px 9px;margin:0;color:#88a48d}.roomlist{display:grid;gap:5px}.room-btn{display:flex;gap:11px;width:100%;align-items:center;background:transparent;border:1px solid transparent;border-radius:14px;padding:9px 9px;text-align:left;color:var(--ink);transition:background .15s,border .15s}.room-btn:hover{background:#edf4e8}.room-btn.on{background:#dcecd9;border-color:#c3d9c0}.room-btn .e{font-size:23px;flex:none}.room-btn b{font-size:12px;display:block}.room-btn small{font-size:9px;display:block;color:#829984;margin-top:3px}
+.mission{background:#f9f3e5;border:1px solid #fff;border-radius:19px;padding:13px 15px;box-shadow:0 8px 25px #56704815}.mission .k{font-size:10px;font-weight:800;color:#b28b56;letter-spacing:1px}.mission p{font-size:11px;line-height:1.65;margin:5px 0}.mission .stars{font-weight:800;font-size:13px;color:#bf9050}
+.room-head{position:absolute;top:27px;left:50%;transform:translateX(-50%);text-align:center;max-width:48vw;pointer-events:none;text-shadow:0 2px 12px #fff}.room-head .mini{font-size:10px;font-weight:900;letter-spacing:3px;color:#679574}.room-head h2{font-size:24px;letter-spacing:-1px;margin:5px 0 3px;color:#355f48}.room-head p{font-size:11px;margin:0;color:#6d8877}
+.action-panel{position:absolute;right:21px;top:138px;width:265px;padding:18px 16px 15px;border:1px solid white;border-radius:24px;background:var(--glass);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.action-panel .over{font-size:10px;color:#9ea990;font-weight:800;letter-spacing:1.2px}.action-panel h3{font-size:18px;margin:5px 0 7px;letter-spacing:-.5px}.action-panel>p{font-size:11px;line-height:1.75;color:#829082;margin:0 0 12px}.act-list{display:grid;gap:7px}.act{border:1px solid #e4ecdf;background:#fff;padding:11px 12px;border-radius:13px;display:flex;gap:9px;align-items:center;text-align:left;color:#4c6953;font-weight:700;font-size:12px;min-height:41px}.act:hover{background:#f1f8eb;border-color:#bbd8b8}.act .aicon{font-size:18px}.act.primary{background:#61936d;color:#fff;border-color:#61936d}.act.primary:hover{background:#527d5c}
+.action-caption{font-size:10px;color:#8c998a;padding:11px 4px 0;line-height:1.6}.action-caption strong{color:#548365}
+.mini-controls{position:absolute;right:22px;bottom:24px;display:flex;flex-direction:column;align-items:end;gap:7px}.control-card{background:var(--glass);border:1px solid #fff;border-radius:16px;padding:10px 13px;box-shadow:0 8px 24px #55745a24;font-size:11px;color:#607d63}.pad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(2,40px);gap:4px}.pad button{border:1px solid #c3d8bf;background:#f2f7e9;border-radius:12px;color:#4d805d;font-size:17px;touch-action:none;user-select:none}.pad button:active{background:#d6ead1}.pad [data-d=up]{grid-column:2}.pad [data-d=left]{grid-column:1;grid-row:2}.pad [data-d=down]{grid-column:2;grid-row:2}.pad [data-d=right]{grid-column:3;grid-row:2}
+.toast{position:absolute;left:50%;bottom:29px;transform:translateX(-50%) translateY(20px);background:#fffdf3;padding:12px 20px;border:1px solid #fff;border-radius:999px;box-shadow:0 8px 27px #516d5132;font-size:12px;font-weight:700;opacity:0;transition:.25s;white-space:normal;max-width:min(550px,calc(100vw - 40px));text-align:center;pointer-events:none}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.avatar-pill{position:absolute;left:270px;bottom:25px;background:var(--glass);border:1px solid white;border-radius:17px;padding:10px 12px;display:flex;align-items:center;gap:9px;box-shadow:0 7px 25px #55705924}.avatar-pill .emoji{font-size:26px}.avatar-pill strong{font-size:11px;display:block}.avatar-pill small{font-size:10px;color:#89a08b}.avatar-pill button{border:0;background:#e8f2e2;color:#4f7c5a;border-radius:10px;padding:7px 9px;font-size:10px;font-weight:800}
+.modal-wrap{position:fixed;inset:0;background:rgba(35,57,44,.36);backdrop-filter:blur(5px);display:grid;place-items:center;z-index:30;padding:16px}.modal-wrap[hidden]{display:none}.modal{width:min(430px,100%);max-height:85vh;overflow:auto;background:#fffdf7;border-radius:27px;padding:27px;box-shadow:0 35px 100px #152c213b}.modal h2{margin:0 0 8px;font-size:21px}.modal p{color:#76907d;font-size:12px;line-height:1.8;margin:0 0 18px}.modal .options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.option{padding:13px 10px;border:1px solid #d8e5d5;border-radius:13px;background:#f5f8ee;color:#48624e;text-align:center;font-size:12px;font-weight:800}.option:hover{background:#e6f2df}.close{margin-top:15px;border:0;border-radius:13px;padding:11px;width:100%;background:#e4eddf;color:#547b5b;font-weight:800}.breathe-ring{border:8px solid #cce8c9;border-radius:50%;width:170px;height:170px;margin:17px auto;display:flex;align-items:center;justify-content:center;font-weight:800;color:#66876b;transition:transform 4s ease-in-out}.breathe-ring.inhale{transform:scale(1.16)}.breathe-ring.exhale{transform:scale(.84)}
+.audio-on{background:#d8efdb!important}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:1190px){.room-head{left:54%;top:28px;max-width:36vw}.room-head h2{font-size:20px}.sidebar{width:204px}.avatar-pill{left:239px}.action-panel{width:240px}}
+@media(max-width:860px){.brand{top:10px;left:10px;padding:11px 13px}.brand h1{font-size:16px}.brand p{font-size:9px}.toolbar{top:11px;right:10px}.iconbtn{width:37px;height:37px;border-radius:12px;font-size:16px}.room-head{top:79px;left:50%;max-width:90vw}.room-head h2{font-size:19px}.room-head p{font-size:10px}.room-head .mini{display:none}.sidebar{top:auto;bottom:8px;left:8px;right:8px;width:auto;height:106px;display:block}.rail{padding:9px;overflow:auto;height:100%;border-radius:18px}.rail h2{display:none}.roomlist{display:flex;min-width:max-content;gap:4px}.room-btn{flex:0 0 76px;flex-direction:column;text-align:center;padding:6px 4px;gap:2px}.room-btn .e{font-size:23px}.room-btn b{font-size:10px;white-space:nowrap}.room-btn small{display:none}.mission{display:none}.action-panel{top:auto;bottom:124px;right:9px;width:min(215px,50vw);padding:11px 11px 10px;border-radius:18px}.action-panel .over,.action-panel>p,.action-caption{display:none}.action-panel h3{font-size:13px;margin:0 0 8px}.act-list{gap:5px;max-height:164px;overflow:auto}.act{font-size:10px;padding:7px 9px;min-height:31px;gap:5px}.act .aicon{font-size:14px}.mini-controls{left:9px;right:auto;bottom:126px}.control-card{padding:6px}.pad{grid-template-columns:repeat(3,32px);grid-template-rows:repeat(2,32px);gap:3px}.pad button{font-size:14px}.avatar-pill{left:9px;bottom:240px;padding:6px 8px;border-radius:12px}.avatar-pill .emoji{font-size:21px}.avatar-pill small{display:none}.avatar-pill strong{font-size:10px}.avatar-pill button{font-size:9px}.toast{bottom:243px;font-size:10px;padding:8px 12px;max-width:50vw;left:53%}}
+@media(max-width:380px){.brand p{display:none}.toolbar{gap:3px}.action-panel{width:47vw}.toast{max-width:48vw}}
+
+.near-hint{position:absolute;left:50%;bottom:83px;transform:translateX(-50%);background:#fffff3f0;border:1px solid #c6e0bc;border-radius:999px;padding:11px 19px;color:#376b49;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:0 7px 27px #315d4328;pointer-events:none;max-width:90vw;overflow:hidden;text-overflow:ellipsis}.near-hint[hidden]{display:none}
+.welcome-wrap{position:fixed;inset:0;display:grid;place-items:center;background:rgba(38,65,49,.58);backdrop-filter:blur(8px);padding:16px;z-index:31}.welcome-wrap[hidden]{display:none}.welcome-card{background:#fffdf5;border:2px solid #fff;width:min(510px,100%);padding:34px 29px;border-radius:30px;box-shadow:0 30px 90px #15332155;text-align:center}.welcome-over{font-weight:900;font-size:12px;letter-spacing:3px;color:#81a789}.welcome-card h2{font-size:26px;margin:13px 0 10px;color:#315d43}.welcome-card p{font-size:13px;line-height:1.85;color:#70846d;margin:0 0 24px}.avatar-choices{display:grid;grid-template-columns:1fr 1fr;gap:14px}.avatar-choice{display:flex;flex-direction:column;align-items:center;gap:7px;padding:20px 9px 17px;border:2px solid #dce9d4;background:#f4f8ed;border-radius:22px;color:#315d43;transition:transform .15s,background .15s}.avatar-choice:hover,.avatar-choice:focus-visible{background:#e1f2d7;border-color:#70ac7d;transform:translateY(-3px)}.avatar-choice span{font-size:60px}.avatar-choice b{font-size:15px}.avatar-choice small{font-size:11px;color:#729078}.welcome-foot{font-size:11px;color:#819b84;line-height:2;margin-top:24px}.instruct{font-size:11px;color:#668d72;margin:0 0 8px}
+@media(max-width:860px){.near-hint{bottom:246px;font-size:10px;padding:8px 11px;max-width:51vw;left:50%}.welcome-card{padding:23px 16px}.welcome-card h2{font-size:21px}.avatar-choice span{font-size:46px}.avatar-choices{gap:8px}.welcome-foot{font-size:10px}}
+.interact-btn{display:block;margin-top:9px;width:100%;border:1px solid #b4d2b6;border-radius:11px;background:#e9f4e3;color:#3d7350;padding:8px 9px;font-size:11px;font-weight:800}
+.welcome-expressions[hidden]{display:none}
+/* 아바타 표정 꾸미기 v6: 사람/초록 오이 공통 */
+.welcome-expressions{border-top:1px solid #e2ebde;margin-top:18px;padding-top:17px;text-align:left}.welcome-expressions>strong,.customize-heading{display:block;font-size:12px;color:#4b7956;margin:0 0 11px}.expression-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.face-pick{border:2px solid #dfe9dc;border-radius:15px;background:#fcfff9;padding:10px 5px;display:flex;flex-direction:column;gap:5px;align-items:center;justify-content:center;color:#4e7159;font-size:11px;font-weight:800;min-height:77px}.face-pick span{font-size:26px;line-height:1.2}.face-pick[aria-pressed="true"],.type-pick[aria-pressed="true"]{background:#dff0d8;border-color:#6ea87a;box-shadow:0 0 0 1px #6ea87a inset}.face-pick:hover,.type-pick:hover{background:#edf7e9}.expression-caption{font-size:11px!important;color:#63846b!important;margin:11px 0!important;text-align:center}.start-world{width:100%;background:#629b71;border:0;border-radius:15px;color:white;font-weight:900;padding:13px 10px;margin-top:4px}.start-world:hover{background:#4c805b}.avatar-choices .avatar-choice[aria-pressed="true"]{background:#dff0d8;border-color:#6ea87a}.type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:4px 0 17px}.type-pick{border:2px solid #dfe9dc;border-radius:13px;padding:12px;background:#fcfff9;font-size:12px;color:#517158;font-weight:800}.customize-note{font-size:11px;line-height:1.7;color:#728d79;margin-top:10px}
+@media(max-width:450px){.welcome-card{padding:19px 14px}.welcome-card p{margin-bottom:12px}.avatar-choice{padding:11px 8px}.face-pick{min-height:62px;padding:6px 4px}.face-pick span{font-size:23px}.welcome-expressions{margin-top:11px;padding-top:11px}}
+</style>
+</head>
+<body>
+<div id="three" aria-label="오이반 3D 공간"></div>
+<div class="ui">
+  <header class="brand"><div class="over">✳ OI CLASS WORLD · 표정 꾸미기 v6</div><h1>🥒 온라인 오이반 월드</h1><p>오늘도 우리답게, 작고 다정한 세계에서</p></header>
+  <div class="toolbar" aria-label="편의 기능"><button class="iconbtn" id="soundBtn" title="소리 켜기/끄기" aria-label="소리 켜기/끄기">🔇</button><button class="iconbtn" id="shotBtn" title="사진 저장" aria-label="화면 사진 저장">📸</button><button class="iconbtn" id="helpBtn" title="도움말" aria-label="도움말">❔</button></div>
+  <aside class="sidebar"><nav class="rail" aria-label="방 선택"><h2>✨ 비밀정원 지도 · 문으로 직접 입장 가능</h2><div class="roomlist" id="roomlist"></div></nav><div class="mission"><div class="k">TODAY'S LITTLE MISSION</div><p id="missionText">오늘 마음에 드는 방 세 곳을 구경해 봐!</p><span class="stars" id="stars">⭐ 0 / 3</span></div></aside>
+  <div class="room-head" aria-live="polite"><div class="mini">MY LITTLE PEACEFUL WORLD</div><h2 id="roomTitle">비밀정원 광장</h2><p id="roomSubtitle">당신에게 작은 쉼표가 되기를</p></div>
+  <section class="action-panel"><div class="over">ACTIVITIES</div><h3 id="panelTitle">오늘은 어디로 갈까?</h3><p id="panelDesc">원하는 장소에 들어가 특별한 활동을 즐겨봐.</p><div class="act-list" id="actions"></div><div class="action-caption">🌿 <strong>모든 활동은 자유롭게!</strong> 실제 글이나 개인정보는 저장하지 않아요.</div></section>
+  <div class="avatar-pill"><span class="emoji" id="avatarIcon">🥒</span><span><strong id="avatarName">초록 오이 · 방긋</strong><small>WASD · 방향키로 걸어요</small></span><button id="dressBtn" type="button">아바타·표정</button></div>
+  <div class="mini-controls"><div class="control-card"><div class="instruct">🚶 직접 걸어서 문으로 입장!<br>E = 들어가기 / 의자 앉기</div><div class="pad"><button data-d="up" aria-label="앞으로">↑</button><button data-d="left" aria-label="왼쪽">←</button><button data-d="down" aria-label="뒤로">↓</button><button data-d="right" aria-label="오른쪽">→</button></div><button type="button" id="interactBtn" class="interact-btn">🚪 E · 상호작용</button></div></div>
+  <div class="near-hint" id="nearHint" hidden>🚪 문 가까이 걸어가거나 E 키를 눌러봐!</div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<div class="welcome-wrap" id="welcomeWrap"><div class="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle"><div class="welcome-over">🌿 OI CLASS WORLD</div><h2 id="welcomeTitle">온라인 오이반에 어서 와!</h2><p>먼저 아바타를 고르고, 오늘의 표정을 정해 줘!<br><b>색깔은 그대로</b> 유지하고 얼굴 표정만 바꿀 수 있어.</p><div class="avatar-choices"><button type="button" class="avatar-choice" id="humanChoice"><span>🧒</span><b>사람 아바타</b><small>귀여운 학생 캐릭터</small></button><button type="button" class="avatar-choice" id="cucumberChoice"><span>🥒</span><b>초록 오이</b><small>말랑말랑 오이 친구</small></button></div><div class="welcome-expressions" id="welcomeExpressions" hidden><strong>😊 2단계 · 마음에 드는 표정을 골라 줘</strong><div class="expression-grid" id="welcomeFaceChoices"></div><p class="expression-caption" id="welcomeFacePreview">지금 표정: 방긋 웃기</p><button type="button" class="start-world" id="welcomeEnter">🌿 이 모습으로 오이반 입장하기</button></div><div class="welcome-foot">🎮 방향키 / WASD · 🚪 문을 지나 이동 · E 키로 상호작용<br>실제 학생 이름이나 개인정보를 입력하지 않아요.</div></div></div>
+<div class="modal-wrap" id="modalWrap" hidden><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalDesc"></p><div class="options" id="modalOptions"></div><div id="modalExtra"></div><button class="close" id="modalClose">닫기</button></div></div>
+<script>
+window.addEventListener('error',function(e){if(!e.message)return;const n=document.getElementById('oiError');if(n){n.hidden=false;n.textContent='화면을 불러오는 도중 문제가 생겼어요: '+e.message}});
+window.addEventListener('unhandledrejection',function(e){const n=document.getElementById('oiError');if(n){n.hidden=false;n.textContent='3D 화면을 불러오지 못했어요. 새로고침해 주세요.'}});
+</script>
+<div id="oiError" hidden role="alert" style="position:fixed;z-index:15;top:calc(50% - 28px);left:50%;transform:translateX(-50%);background:#fff7eb;border:1px solid #eac69b;border-radius:16px;padding:15px 18px;font-size:12px;max-width:70vw;color:#815d35;box-shadow:0 8px 28px #7772"></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
+const $=s=>document.querySelector(s);
+const ROOMS=[
+ {id:'plaza',icon:'🏡',name:'비밀정원 광장',sub:'오이반의 모든 이야기가 시작되는 곳',desc:'햇살과 꽃이 반겨주는 작은 중앙 정원',actions:[['👋','인사하기','hello'],['🎲','오늘의 방 추천','recommend']]},
+ {id:'class',icon:'🥒',name:'우리의 오이반',sub:'동글동글한 열세 자리, 함께 자라는 교실',desc:'학생 책상 13개, 선생님 자리, 오이 작품 전시와 미션 게시판이 있어.',actions:[['🪑','내 자리 앉기','seat'],['🎵','평화로운 음악','calm'],['🚀','미션 수행 모드','mission'],['💚','오늘의 칭찬','praise']]},
+ {id:'fire',icon:'🔥',name:'노을빛 캠핑숲',sub:'노을과 나무향, 불빛이 포근한 숲',desc:'나무가 에워싼 어두운 밤이 아니라, 탁 트인 노을빛 캠핑장이야.',actions:[['🔥','불멍하기','firegaze'],['🍡','마시멜로 굽기','marsh'],['⛺','텐트에서 쉬기','tent'],['🎧','장작·숲 소리','forest']]},
+ {id:'meadow',icon:'🧘',name:'초록 쉼표 정원',sub:'풀잎, 햇살, 산들바람 그리고 쉼',desc:'요가 매트와 피크닉 돗자리가 펼쳐진 부드러운 초록 잔디밭.',actions:[['🧘','요가하기','yoga'],['🌬️','1분 명상','breathe'],['🧺','피크닉하기','picnic'],['🐦','새소리 듣기','birds']]},
+ {id:'plane',icon:'✈️',name:'구름 위 오이항공',sub:'오늘의 창밖은 하얀 구름 천국',desc:'퍼스트클래스 좌석과 푸른 하늘이 기다리는 작은 여행.',actions:[['🛏️','좌석에서 자기','sleep'],['🌎','어디로 여행 갈래?','travel'],['☁️','구름 구경하기','clouds']]},
+ {id:'food',icon:'🍭',name:'냠냠 판타지랜드',sub:'사탕과 초콜릿이 반짝이는 달콤한 거리',desc:'솜사탕·초콜릿·마카롱·분식·과일이 가득한 상상의 먹거리 마을.',actions:[['🍭','사탕 고르기','candy'],['🍫','초콜릿 고르기','choc'],['🍰','디저트 추천','dessert'],['🍜','오늘의 메뉴 뽑기','menu']]},
+ {id:'cafe',icon:'☕',name:'나뭇가지 카페',sub:'커다란 나무의 가지마다 작은 테이블',desc:'허니우드 나무기둥과 컬러풀한 테이블, 꽃이 피어난 공중 카페.',actions:[['🥤','음료 주문하기','drink'],['📚','나무 위에서 쉬기','branch'],['🌷','카페 산책','cafeWalk']]},
+ {id:'mind',icon:'🤍',name:'마음 온실',sub:'따뜻한 빛 아래, 마음을 놓아두는 곳',desc:'회색 대신 크림·살구·연한 금빛으로 채운 조용하고 우아한 공간.',actions:[['💗','지금 마음 살피기','feel'],['🌿','숨 고르기','breathe'],['☁️','생각 흘려보내기','letgo'],['🕯️','고요한 시간','still']]},
+ {id:'gym',icon:'🏆',name:'오이 올림픽',sub:'우리는 경쟁보다 응원이 멋진 팀!',desc:'운동회 현수막, 응원석, 피구 코트와 알록달록 깃발.',actions:[['🏐','피구 놀이','dodge'],['📣','응원하기','cheer'],['🏁','달리기 출발','run'],['🎊','승리 세리머니','victory']]},
+ {id:'party',icon:'🪩',name:'오이 디스코',sub:'반짝반짝, 오늘의 주인공은 우리',desc:'핑크·민트·라벤더 빛 풍선과 디스코볼, 귀여운 댄스 플로어.',actions:[['🕺','댄스댄스','dance'],['🎶','파티 음악','partyMusic'],['🎉','꽃가루 파티','confetti'],['📸','포토 타임','photo']]}
+];
+let avatarType='cucumber',avatarExpression='smile',faceGroup=null,portalSpots=[],portalCooldown=0,lastHint='',room='plaza',scene=new THREE.Scene(),root=new THREE.Group(),avatar,avatarParts={},renderer,camera,clock=new THREE.Clock(),animated=[],effects=[],starCount=0,seen=new Set(['plaza']),actionUntil=0,pose='',ambientMode='',audioContext=null,audioNodes=[],audioTimers=[],soundOn=false,toastTimeout=null,breathTimer=null;
+const pressed=new Set();
+// 아바타는 사람/고정 초록 오이 2종, 얼굴 표정 6종만 선택합니다. 색상 선택 없음.
+const MAT=(c,r=.88,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+function addMesh(geo,col,x=0,y=0,z=0,group=root,opts={}){let mesh=new THREE.Mesh(geo,typeof col==='number'?MAT(col):col);mesh.position.set(x,y,z);mesh.castShadow=!!opts.shadow;mesh.receiveShadow=!!opts.receive;group.add(mesh);return mesh}
+function box(w,h,d,c,x=0,y=0,z=0,g=root){return addMesh(new THREE.BoxGeometry(w,h,d),c,x,y,z,g,{shadow:true,receive:true})}
+function sphere(r,c,x=0,y=0,z=0,g=root,seg=16){if(typeof g==='number'){seg=g;g=root}return addMesh(new THREE.SphereGeometry(r,seg,12),c,x,y,z,g,{shadow:true})}
+function cyl(rt,rb,h,c,x=0,y=0,z=0,g=root,seg=20){if(typeof g==='number'){seg=g;g=root}return addMesh(new THREE.CylinderGeometry(rt,rb,h,seg),c,x,y,z,g,{shadow:true,receive:true})}
+function cone(r,h,c,x=0,y=0,z=0,g=root,seg=14){if(typeof g==='number'){seg=g;g=root}return addMesh(new THREE.ConeGeometry(r,h,seg),c,x,y,z,g,{shadow:true})}
+function torus(r,t,c,x=0,y=0,z=0,g=root){return addMesh(new THREE.TorusGeometry(r,t,9,40),c,x,y,z,g)}
+function ellipsoid(x,y,z,sx,sy,sz,c,g=root){let m=sphere(1,c,x,y,z,g);m.scale.set(sx,sy,sz);return m}
+function plane(w,d,c,x=0,y=.01,z=0){const m=addMesh(new THREE.PlaneGeometry(w,d),c,x,y,z,root,{receive:true});m.rotation.x=-Math.PI/2;return m}
+function hex(c){return '#' + c.toString(16).padStart(6,'0')}
+function makeLabel(txt,x,y,z,opt={}){let canvas=document.createElement('canvas');canvas.width=768;canvas.height=160;let ctx=canvas.getContext('2d');ctx.fillStyle=opt.bg||'rgba(255,251,241,0.93)';ctx.beginPath();if(typeof ctx.roundRect==='function'){ctx.roundRect(8,8,752,144,40)}else{ctx.rect(8,8,752,144)}ctx.fill();ctx.font=`800 ${opt.size||50}px 'Noto Sans KR',sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=opt.color||'#477153';ctx.fillText(txt,384,84,706);let tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;let sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthWrite:false}));sprite.scale.set(opt.w||5.8,opt.h||1.2,1);sprite.position.set(x,y,z);root.add(sprite);return sprite}
+function base(ground=0xe9efdc,sky=0xdfeee6,closed=false){scene.background=new THREE.Color(sky);scene.fog=new THREE.Fog(sky,24,58);plane(38,38,ground,0,-.08,0);if(closed){box(18,.3,13,ground,0,-.19,-1.2);box(18,6,.22,0xf8f3e5,0,2.8,-7.2);box(.2,5.5,13,0xf9f4e9,-9,2.7,-1.1);box(.2,5.5,13,0xf9f4e9,9,2.7,-1.1);} }
+function flower(x,z,col=0xf6c4cd){cyl(.027,.03,.42,0x6fa773,x,.22,z);for(let i=0;i<5;i++){let a=i*Math.PI*2/5;sphere(.13,col,x+Math.cos(a)*.17,.45,z+Math.sin(a)*.17)}sphere(.11,0xffd86f,x,.45,z)}
+function tree(x,z,k=1,fol=0x8bbf89){cyl(.18*k,.24*k,2.2*k,0xa37a5c,x,1.05*k,z);let n=sphere(.9*k,fol,x,2.45*k,z);n.scale.set(1.1,.86,1.05);sphere(.72*k,0xa3d4a0,x-.62*k,2.2*k,z+.05*k);sphere(.64*k,0x86b882,x+.55*k,2.67*k,z);return n}
+function shrub(x,z,k=1){sphere(.38*k,0x88be88,x,.32*k,z);sphere(.29*k,0xa9d3a2,x+.23*k,.4*k,z)}
+function chair(x,z,color=0xa9d4b5,rot=0){const group=new THREE.Group();group.position.set(x,0,z);group.rotation.y=rot;root.add(group);cyl(.55,.58,.18,color,0,.59,0,group,22);cyl(.53,.53,.15,color,0,1.18,-.38,group,22).rotation.x=Math.PI/2;cyl(.08,.08,.52,0xa98e70,-.3,.28,0,group);cyl(.08,.08,.52,0xa98e70,.3,.28,0,group);return group}
+function table(x,z,c=0xe8c69c,rad=.83){cyl(rad,rad,.19,c,x,.94,z);cyl(.12,.13,.86,0xb99b7a,x,.43,z)}
+function balloon(x,z,c=0xffaab6,h=3){sphere(.44,c,x,h,z);const wire=cyl(.022,.022,h-.35,0xe4d5ca,x,(h-.35)/2,z);sphere(.075,0xfff0d4,x,h-.45,z)}
+function flag(x,z,c=0xffb69f,h=3.4){cyl(.045,.045,h,0xc8a98a,x,h/2,z);let f=box(.9,.54,.055,c,x+.45,h-.4,z);return f}
+function cloud(x,y,z,scale=1,group=root){let g=new THREE.Group();g.position.set(x,y,z);g.scale.setScalar(scale);group.add(g);ellipsoid(-.5,.0,0,.7,.4,.48,0xffffff,g);ellipsoid(0,.21,0,.77,.57,.51,0xfffefe,g);ellipsoid(.6,.0,0,.72,.38,.47,0xffffff,g);return g}
+function roundedPlatform(c=0xfaf0da,r=10){cyl(r,r,.35,c,0,-.33,0,64)}
+function effectGroup(y=0){let g=new THREE.Group();g.position.y=y;root.add(g);return g}
+function buildPlaza(){
+ base(0xd7ebc9,0xe9f5df);roundedPlatform(0xd7ebca,11.2);
+ cyl(3.0,3.2,.2,0xfbf2d7,0,.01,-.3,48);cyl(2.25,2.4,.13,0xe5efcd,0,.19,-.3,48);
+ cyl(.92,1.06,.8,0x9ac79a,0,.55,-.3,24);cone(1.12,.65,0xe9f5cf,0,1.33,-.3);
+ makeLabel('🌼 오이반 비밀정원 · 문으로 걸어가 봐!',0,2.55,-.3,{w:7.2,size:42});
+ const colors=[0xa2d2a7,0xf4c9a1,0xc9e4b4,0xa6d1ee,0xf5c0cf,0xc3e3cb,0xf3dfba,0xaebfd8,0xe7bbd9];
+ portalSpots=[];
+ for(let i=0;i<9;i++){
+   const a=i*Math.PI*2/9,x=Math.sin(a)*8.25,z=Math.cos(a)*8.25;
+   portalSpots.push({id:ROOMS[i+1].id,x,z});
+   const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=a;root.add(g);
+   // 입구가 실제로 열려 있는 3D 아치문
+   cyl(1.25,1.3,.13,0xfff7df,x,.02,z,root,24);
+   box(.29,2.44,.43,0xfff9eb,-.93,1.24,0,g);
+   box(.29,2.44,.43,0xfff9eb,.93,1.24,0,g);
+   box(2.12,.34,.45,colors[i],0,2.55,0,g);
+   let roof=cone(1.27,.67,0xfff8ed,0,3.01,0,g,4);roof.rotation.y=Math.PI/4;
+   box(1.58,.05,1.5,colors[i],0,.08,.05,g);
+   const gateGlow=box(1.55,2.14,.03,new THREE.MeshBasicMaterial({color:colors[i],transparent:true,opacity:.17,depthWrite:false}),0,1.28,-.10,g);
+   gateGlow.castShadow=false;
+   sphere(.23,colors[i],0,2.8,.40,g);
+   makeLabel(ROOMS[i+1].icon+' '+ROOMS[i+1].name,x,3.86,z,{size:36,w:3.6,h:.78});
+   for(let k=0;k<2;k++)flower(x+(k===0?-1.40:1.40),z+.55,0xffd8b7);
+ }
+ for(let i=0;i<35;i++){const a=i*2.399,r=4.1+(i%4)*.58;flower(Math.cos(a)*r,Math.sin(a)*r,[0xffd4ca,0xfff0ab,0xffffff][i%3])}
+ tree(-10.3,-7.5,.7);tree(10.3,-7.5,.67);
+}
+function buildClass(){base(0xe9e3d2,0xe7f1e5,true);roundedPlatform(0xe9e4d3,9.2);box(11.5,3.0,.18,0x668d75,0,2.8,-7.02);box(12,.15,.34,0xb7906d,0,1.28,-6.75);makeLabel('오이반 · 오늘도 함께 자라는 우리',0,3.8,-6.63,{w:8,size:46,bg:'#5e8b72',color:'#ffffff'});makeLabel('오늘의 작은 미션',-5.8,4.5,-6.6,{w:2.9,size:38});makeLabel('우리들의 작품',5.7,4.5,-6.6,{w:2.9,size:38});for(let i=0;i<7;i++){let x=-5.8+i*1.85;box(1.28,1.0,.1,[0xf3d0cc,0xf8e7aa,0xc9e2c9,0xd3d8ef][i%4],x,4.5,-6.42);sphere(.1,0xf8f3e0,x,5.05,-6.32)}
+ // 13 round student tables, 13 rounded chairs. 4 + 4 + 5
+ const seats=[];for(let row=0;row<3;row++){let count=row===2?5:4;for(let j=0;j<count;j++){let x=(j-(count-1)/2)*(row===2?2.45:3.05),z=-2+row*2.68;seats.push([x,z]);table(x,z,[0xe7bf92,0xeccba8,0xe6c29a][row],.75);chair(x,z+1.08,[0xa8d4b0,0xc0d9ed,0xf0cdb5,0xd5cbe7][j%4]);sphere(.08,0xffffff,x,.99,z)}}window.oiSeats=seats;
+ // teacher desk apart from students
+ box(3,.18,1.25,0xe3b587,0,1.08,-4.64);for(let dx of [-1.1,1.1])cyl(.08,.08,.98,0xa78664,dx,.52,-4.64);chair(0,-5.75,0xf3d4ac,Math.PI);box(.7,.6,.09,0xa7c1b0,.67,1.47,-4.85);sphere(.32,0x89bc89,-7,.68,-4.8);cone(.55,1.05,0x72ac78,-7,1.55,-4.8);sphere(.25,0xe4bd9a,7.4,.65,-5);makeLabel('선생님 자리',0,2.55,-4.7,{w:2.4,size:34});for(let i=0;i<9;i++)flower(-7.8+i*1.8,6.9,i%2?0xffd7c1:0xfdf2ac)}
+function buildFire(){base(0xb3d5a4,0xf7dfc7);roundedPlatform(0xb6cda6,10.3);scene.fog=new THREE.Fog(0xf6dfc9,29,65); // golden afternoon, open forest
+ for(let i=0;i<9;i++){let a=(i/9)*Math.PI*2;tree(Math.cos(a)*11.5,Math.sin(a)*11,0.8+(i%3)*.13,[0x91bb83,0xa2c991,0xb0c990][i%3])}
+ cyl(2.35,2.5,.16,0xcabb98,0,.08,0,18);for(let i=0;i<13;i++){let a=i*Math.PI*2/13;sphere(.44,0xada29a,Math.cos(a)*1.58,.18,Math.sin(a)*1.58)}for(let i=0;i<5;i++){let log=cyl(.21,.21,3.25,0x946e50,0,.38,0);log.rotation.z=Math.PI/2;log.rotation.y=i*Math.PI/5}for(let i=0;i<7;i++){let a=i*2.5;const flame=cone(.34+.09*(i%3),1.45+(i%3)*.25,[0xffad45,0xffdd78,0xff864c][i%3],Math.sin(a)*.33,1.0,Math.cos(a)*.33);animated.push({obj:flame,kind:'flame',y:1,phase:i})}const glow=new THREE.PointLight(0xffb66e,35,14);glow.position.set(0,2,0);root.add(glow);
+ for(let i=0;i<7;i++){let a=i*2*Math.PI/7;let o=cyl(.68,.72,1.5,0x9f785c,Math.cos(a)*4.75,.61,Math.sin(a)*4.75,12);o.rotation.z=Math.PI/2;o.rotation.y=a}
+ for(let i=0;i<2;i++){let x=i?-6.4:6.4,z=-3.8;let t=cone(2.2,3.25,i?0xf1bda0:0xf8e5bf,x,1.7,z,4);t.rotation.y=Math.PI/4;makeLabel(i?'별빛 텐트':'낮잠 텐트',x,3.65,z,{w:2.4,size:35})}sphere(.5,0xf8d9a3,-4.2,.46,4.9);sphere(.45,0xffe7bb,4.3,.44,4.7);for(let i=0;i<14;i++)flower(-8+(i%7)*2.8,7+(i%2)*.9,i%2?0xffd4cb:0xffefb9);makeLabel('☀️ 따뜻한 오후의 모닥불',0,5.2,-6.8,{w:6.5})}
+function buildMeadow(){base(0xbbe1a5,0xe0f5ee);roundedPlatform(0xb4dca3,11);for(let i=0;i<7;i++)tree(-9+i*3,8+(i%2),.69);for(let i=0;i<52;i++){let a=i*2.399,r=3.0+(i%9)*.86;flower(Math.cos(a)*r,Math.sin(a)*r,[0xffe7a9,0xfad4da,0xffffff][i%3])}const colors=[0xf1c7c9,0xceead4,0xe0d6f4,0xf8e3aa];for(let i=0;i<4;i++){let x=-4.3+i*2.9;box(1.65,.055,3.1,colors[i],x,.06,-1.5);ellipsoid(x,.28,-2.5,.47,.28,.42,0xfff3e3)}box(3.8,.09,2.3,0xf8f0db,-.7,.06,4.7);for(let i=0;i<4;i++)box(3.6,.015,.07,0xe9ccb6,-.7,.12,3.9+i*.43);box(1.1,.75,.9,0xcba677,-2,.43,4.2);sphere(.26,0xffd998,.3,.42,4.1);sphere(.26,0xffb6bb,.8,.42,4.5);cloud(-4.5,7,-7,1.7);cloud(5.3,6,-5,1.2);makeLabel('초록 쉼표 정원 · 숨 쉬는 곳',0,4.6,-6.6,{w:6.8})}
+function buildPlane(){base(0xedf5fc,0xc8eafd,true);roundedPlatform(0xe7f3fb,9.5);scene.fog=new THREE.Fog(0xc9e9fc,25,65);box(17,5,.2,0xeef7fc,0,2.6,-7.05);for(let i=0;i<6;i++){let x=-7.0+i*2.8;let p=box(2.1,2.35,.085,0xaeddfa,x,2.9,-6.83);sphere(.52,0xffffff,x-.35,2.6,-6.54);sphere(.39,0xffffff,x+.2,2.8,-6.5);sphere(.38,0xffffff,x+.55,2.5,-6.5);box(2.22,.14,.2,0xf6fcff,x,1.7,-6.65)}
+ for(let row=0;row<2;row++)for(let i=0;i<4;i++){let x=-5.4+i*3.6,z=-2.1+row*4.1;let c=[0x99bed2,0xe4c7ab,0xb6cec2,0xb6c5df][i];box(1.95,.85,1.65,c,x,.76,z);box(1.95,1.7,.32,c,x,1.58,z-.83);box(.3,.4,1.5,0xdce6dd,x-1.06,.87,z);box(.3,.4,1.5,0xdce6dd,x+1.06,.87,z);box(.7,.14,.8,0xf8f5e8,x,1.3,z+1.1)}
+ let signs=makeLabel('☁️ OI AIRLINES · FIRST CLASS',0,5.32,-6.6,{w:7.1});for(let i=0;i<12;i++){let c=cloud(-8+i*1.7,7+(i%3)*.65,-9,1.2);animated.push({obj:c,kind:'cloud',phase:i,x:c.position.x})}}
+function buildFood(){base(0xf8e5d2,0xfff1e5);roundedPlatform(0xf9e6cc,10.5);let names=['🍭 CANDY','🍫 CHOCO','🍰 CAKE','🍦 ICE'];let c=[0xffc8d9,0xcaa68b,0xffe5bc,0xc9dff3];for(let i=0;i<4;i++){let x=-6.3+i*4.2;box(3.1,2.3,2.4,0xfff9ed,x,1.2,-3.3);box(3.4,.28,2.8,c[i],x,2.55,-3.3);cone(2.3,1.5,c[i],x,3.43,-3.3,4).rotation.y=Math.PI/4;box(3.2,.17,1.5,0xf8d5b8,x,1.14,-1.93);makeLabel(names[i],x,4.85,-3.3,{w:3,size:46})}
+ // candy canes, lollypops, chocolates and macaron towers
+ for(let i=0;i<7;i++){let x=-7.5+i*2.45,z=2.6+(i%2)*1.1;cyl(.045,.045,1.0,0xffffff,x,.56,z);sphere(.29,[0xffaabb,0xf7d77e,0xb4dce1,0xc9aee3][i%4],x,1.16,z);torus(.17,.05,0xfff7f0,x,1.18,z+.13)}for(let i=0;i<6;i++){let x=-6.5+i*2.5;box(.9,.35,.88,0x88583f,x,.42,5.6);box(.72,.06,.7,0xc99b73,x,.63,5.6);sphere(.18,[0xffaabb,0xffedbe,0xc8e7d0][i%3],x,.82,5.6)}for(let i=0;i<10;i++)flower(-8+(i%5)*4,7+(i%2)*.6,0xffc8cf);makeLabel('달콤한 하루, 냠냠 천국',0,5.8,-7.5,{w:6.3})}
+function buildCafe(){base(0xe9ebdb,0xe2f2e5);roundedPlatform(0xe5eaca,10.2);box(7,1.22,2.3,0xc4a085,0,.77,-3.9);box(7.4,.2,2.6,0xfff2da,0,1.49,-3.9);makeLabel('🌈 OI TREE CAFE',0,4.7,-6.9,{w:5.8});for(let i=0;i<8;i++){let x=-3+i*.85;sphere(.24,[0xffb8bb,0xf6dc9f,0xb5e3c3,0xb9d6f5][i%4],x,1.87,-3.45)}
+ // giant tree trunk with organic branching and colorful elevated round seats
+ cyl(.73,.88,6.5,0xa78362,6.8,3.0,.3);for(let i=0;i<4;i++){let a=i*2*Math.PI/4,z=Math.sin(a)*2.2,x=6.8+Math.cos(a)*2.1,yy=2.3+i*.83;let branch=cyl(.19,.23,4.7,0xb08c68,(6.8+x)/2,yy,.3+z/2);branch.rotation.z=-Math.atan2(x-6.8,3.3)*.6;branch.rotation.x=Math.atan2(z,4)*.8;table(x,z+.3,[0xffd4a3,0xf9bccc,0xb5dfcf,0xc4d6f3][i],.77);sphere(.53,0x8fbe8d,x+.4,yy+1.1,z);sphere(.48,0xa4cf9b,x-.25,yy+1.35,z)}for(let i=0;i<8;i++){let a=i*Math.PI*2/8;sphere(.75,[0x91bf8a,0xa2d09a][i%2],6.8+Math.cos(a)*1.8,6.1+Math.sin(a)*.75,.3+Math.sin(a)*1.7)}for(let i=0;i<5;i++){let x=-6.8+i*2.2;table(x,3.2,[0xffd9ad,0xc5e6d4,0xfac8ce][i%3],.63);chair(x,4.3,[0xaedac2,0xf1c7c1,0xe9d7a9][i%3])}for(let i=0;i<12;i++)flower(-7+(i%6)*2.5,6+(i%2)*.6)}
+function buildMind(){base(0xf4e7d9,0xf9e9da,true);roundedPlatform(0xf7e6d9,8.8);box(17,5,.2,0xf9ebdf,0,2.8,-7.1);scene.background=new THREE.Color(0xf8e7da);scene.fog=new THREE.Fog(0xf8e7da,23,62);cyl(4.9,4.9,.10,0xfff7eb,0,.06,0,60);cyl(3.8,3.8,.09,0xeaccb8,0,.11,0,60);cyl(2.55,2.55,.07,0xfffbf3,0,.16,0,60);
+ for(let i=0;i<7;i++){let a=i*2*Math.PI/7;let x=Math.cos(a)*3.4,z=Math.sin(a)*3.4;sphere(.72,[0xf0c5b9,0xeacbac,0xdcbca7][i%3],x,.63,z);sphere(.17,0xfff6e6,x,.97,z)}for(let i=0;i<17;i++){let a=i*2.399,r=2.6+(i%4)*1.6;let s=sphere(.22+(i%3)*.09,[0xf6d7bd,0xffe8d6,0xe5bbad][i%3],Math.cos(a)*r,1.4+(i%5)*.42,Math.sin(a)*r);animated.push({obj:s,kind:'float',y:s.position.y,phase:i})}for(let i=0;i<9;i++){let x=-6+i*1.5;cone(.16,.4,0xf0d3a5,x,.65,-5.5);sphere(.1,0xffedb0,x,.88,-5.5)}makeLabel('마음 온실 · 있는 그대로 괜찮아',0,4.7,-6.6,{w:7,bg:'#fff8ef',color:'#96755e'})}
+function buildGym(){base(0xe4dfca,0xe6eff0,true);roundedPlatform(0xe8d8bc,9.7);box(17,.2,12.5,0xcda779,0,.08,-.8);for(let i=-4;i<=4;i++){box(.04,.023,10,0xe4c397,i*1.7,.2,-1)}box(16,.035,.07,0xffffff,0,.23,-1);box(.07,.035,10,0xffffff,0,.23,-1);let ring=addMesh(new THREE.RingGeometry(2.15,2.22,60),MAT(0xffffff),0,.25,-1);ring.rotation.x=-Math.PI/2;for(let i=0;i<5;i++)flag(-7.3+i*3.6,4.9,[0xf3a9a6,0xf6db8f,0xa8d7b0,0xbad0eb][i%4]);for(let i=0;i<5;i++)flag(-7.3+i*3.6,-6.7,[0xbad0eb,0xf3a9a6,0xf6db8f,0xa8d7b0][i%4]);for(let i=0;i<4;i++)sphere(.43,[0xf6b1a6,0xa8ccea,0xf2dc89,0xaeddb8][i],-4.5+i*3,.63,3.5);box(3,2.2,.2,0xc2dbba,-5.8,2.25,-7);box(3,2.2,.2,0xc2dbba,5.8,2.25,-7);makeLabel('오이반 운동회 · 다 같이 파이팅!',0,5,-6.8,{w:8,bg:'#fff6e4'});makeLabel('청팀',-5.3,3.2,-6.72,{w:2,size:43,bg:'#dcecff',color:'#5174a8'});makeLabel('홍팀',5.3,3.2,-6.72,{w:2,size:43,bg:'#ffe0da',color:'#b76967'})}
+function buildParty(){base(0xe2d7f2,0xd8d6f2,true);roundedPlatform(0xe6d9f4,10.2);box(12,.25,8,0xd0b8e9,0,.15,-.65);const cc=[0xffaac3,0xb4eadc,0xfde3a6,0xc3c5ff];for(let i=0;i<24;i++){let x=-5.1+(i%6)*2.05,z=-3.7+Math.floor(i/6)*1.94;box(1.89,.045,1.83,cc[(i+Math.floor(i/6))%4],x,.32,z)}let ball=sphere(.93,0xf2f7ff,0,5.4,-1);ball.material=MAT(0xe5e6fc,.14,.5);animated.push({obj:ball,kind:'spin'});for(let i=0;i<20;i++){let a=i*Math.PI*2/20;balloon(Math.cos(a)*7.5,Math.sin(a)*5.8-1,[0xffc0cc,0xffe8a7,0xc8ead4,0xcfc2ec][i%4],2.4+(i%3)*.3)}for(let i=0;i<7;i++){sphere(.43,[0xf2b3d4,0xbad8f4,0xf5db9d][i%3],-3+i,3.8,-6.7)}makeLabel('🪩 OI DISCO · DANCE PARTY',0,5,-6.8,{w:8,bg:'#fff3fa',color:'#915f91'});box(3.7,2.3,.18,0xfff4ed,6.4,1.72,1.0);makeLabel('PHOTO ZONE ✨',6.4,3.2,1.28,{w:3.6,size:34,bg:'#ffe3ef',color:'#a85b8c'});for(let i=0;i<10;i++){let s=sphere(.15,cc[i%4],-7+i*1.5,4.8+(i%2)*.5,4.8);animated.push({obj:s,kind:'float',y:s.position.y,phase:i})}}
+const BUILD={plaza:buildPlaza,class:buildClass,fire:buildFire,meadow:buildMeadow,plane:buildPlane,food:buildFood,cafe:buildCafe,mind:buildMind,gym:buildGym,party:buildParty};
+function makeReturnDoor(){
+  // 각 공간의 앞쪽에 열려 있는 3D 출구. 이곳으로 걸어 나오면 광장으로 이동!
+  const g=new THREE.Group();g.position.set(0,0,8.05);root.add(g);
+  box(.28,2.52,.37,0xfbf7eb,-1.04,1.28,0,g);
+  box(.28,2.52,.37,0xfbf7eb,1.04,1.28,0,g);
+  box(2.35,.35,.43,0x90bf9f,0,2.63,0,g);
+  box(1.70,.04,1.7,0xe7f2d9,0,.10,-.15,g);
+  box(1.80,2.12,.04,new THREE.MeshBasicMaterial({color:0xb9e5c9,transparent:true,opacity:.13,depthWrite:false}),0,1.28,0,g);
+  makeLabel('🚪 광장으로 나가기',0,3.25,8.0,{w:3.8,h:.68,size:38});
+}
+function createAvatar(){
+ avatar=new THREE.Group();root.add(avatar);avatar.position.set(0,.05,room==='plaza'?2.7:5.1);
+ const body=new THREE.Group();avatar.add(body);
+ const arms=[],legs=[];
+ const dark=MAT(0x345943), blush=MAT(0xec9fa2);
+ if(avatarType==='human'){
+   const skin=MAT(0xf3d1b4),hair=MAT(0x59483f),shirt=MAT(0x8ec7ab),pants=MAT(0x617eaa);
+   // 머리, 앞머리, 얼굴
+   ellipsoid(0,2.04,0,.49,.55,.43,skin,body);
+   ellipsoid(0,2.34,-.075,.52,.30,.46,hair,body);
+   ellipsoid(-.22,2.31,.24,.27,.16,.26,hair,body);
+   ellipsoid(.23,2.31,.24,.27,.16,.26,hair,body);
+   box(.92,.97,.48,shirt,0,1.25,0,body);
+   box(.94,.12,.48,0xf8f3dc,0,.80,0,body);
+   // 양쪽 팔
+   for(const dx of [-.62,.62]){
+     const a=new THREE.Group();a.position.set(dx,1.64,0);body.add(a);
+     cyl(.165,.16,.56,shirt,0,-.31,0,a);
+     sphere(.17,skin,0,-.64,.01,a);arms.push(a);
+   }
+   // 바지, 운동화
+   for(const dx of [-.25,.25]){
+     const leg=new THREE.Group();leg.position.set(dx,.78,0);body.add(leg);
+     cyl(.19,.18,.55,pants,0,-.29,0,leg);
+     ellipsoid(0,-.56,.12,.23,.12,.34,0xfff5ec,leg);legs.push(leg);
+   }
+ }else{
+   // 오이는 고정 초록색, 머리의 나뭇잎만 있는 단일 디자인
+   const green=MAT(0x87c98e),pale=MAT(0xd4eabe);
+   const capsule=addMesh(new THREE.CapsuleGeometry(.53,1.03,8,16),green,0,1.32,0,body,{shadow:true});capsule.scale.z=.83;
+   ellipsoid(0,1.33,.39,.32,.53,.15,pale,body);
+   for(const dx of [-.57,.57]){const a=new THREE.Group();a.position.set(dx,1.82,0);body.add(a);cyl(.13,.13,.47,green,0,-.22,0,a);sphere(.15,0xc8e5b5,dx>0?.06:-.06,-.46,.05,a);arms.push(a)}
+   for(const dx of [-.27,.27]){let leg=new THREE.Group();leg.position.set(dx,.38,0);body.add(leg);ellipsoid(0,-.08,.12,.23,.14,.32,0xfff5e0,leg);legs.push(leg)}
+   let leaf=ellipsoid(-.20,2.49,0,.31,.13,.2,0x5ca979,body);leaf.rotation.z=.3;
+   cyl(.06,.06,.28,0x6b9561,0,2.43,0,body);
+ }
+ const shadow=addMesh(new THREE.CircleGeometry(.78,32),new THREE.MeshBasicMaterial({color:0x53875f,transparent:true,opacity:.16,depthWrite:false}),0,.017,0,avatar);shadow.rotation.x=-Math.PI/2;
+ avatar.scale.setScalar(1.15);avatarParts={body,arms,legs};
+ drawAvatarFace();
+}
+
+
+// 3D 표정: 스티커가 아니라 아바타 얼굴에 실제 도형을 붙여 교체합니다.
+const FACE_OPTIONS=[
+ {key:'smile',emoji:'🙂',name:'방긋 웃기'},
+ {key:'grin',emoji:'😆',name:'활짝 웃기'},
+ {key:'wink',emoji:'😉',name:'윙크'},
+ {key:'sleepy',emoji:'😴',name:'졸린 얼굴'},
+ {key:'surprise',emoji:'😮',name:'깜짝 놀람'},
+ {key:'sparkle',emoji:'🥰',name:'반짝 눈빛'}
+];
+function drawAvatarFace(){
+ if(!avatarParts.body)return;
+ if(faceGroup){avatarParts.body.remove(faceGroup);faceGroup.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material&&o.material.dispose)o.material.dispose()}})}
+ faceGroup=new THREE.Group();avatarParts.body.add(faceGroup);
+ const human=avatarType==='human',eyeY=human?2.08:1.77,eyeX=human?.18:.22,eyeZ=human?.432:.49,mouthY=human?1.91:1.50,mouthZ=human?.46:.556;
+ const eyeCol=0x3d483f,pink=0xe99ea4;
+ const add=(geom,col,x,y,z)=>addMesh(geom,col,x,y,z,faceGroup);
+ const dot=(x,y,z,rad=.07,col=eyeCol)=>add(new THREE.SphereGeometry(rad,14,12),col,x,y,z);
+ const oval=(x,y,z,sx,sy,sz,col)=>{let m=add(new THREE.SphereGeometry(1,16,12),col,x,y,z);m.scale.set(sx,sy,sz);return m};
+ const stroke=(points,r=.022,col=eyeCol)=>add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p))),18,r,6,false),col,0,0,0);
+ const closedEye=(x,up=false)=>{let pts=[[-.105,.005],[-.054,up?-.042:.038],[0,up?-.055:.052],[.054,up?-.042:.038],[.105,.005]].map(([dx,dy])=>[x+dx,eyeY+dy,eyeZ+.038]);stroke(pts,.021)};
+ const eye=(x,big=false)=>{oval(x,eyeY,eyeZ+.015,big?.093:.076,big?.12:.090,.052,eyeCol);dot(x-.025,eyeY+.036,eyeZ+.065,.024,0xffffff)};
+ if(avatarExpression==='sleepy'){closedEye(-eyeX);closedEye(eyeX)}
+ else if(avatarExpression==='wink'){eye(-eyeX);closedEye(eyeX,true)}
+ else {eye(-eyeX,avatarExpression==='surprise');eye(eyeX,avatarExpression==='surprise')}
+ // 볼터치는 어느 표정에서나 유지합니다.
+ for(const x of [-1,1])oval(x*(eyeX+.17),eyeY-.21,eyeZ-.055,.095,.052,.040,pink);
+ if(avatarExpression==='grin'){
+   oval(0,mouthY-.01,mouthZ,.17,.115,.035,eyeCol);
+   oval(0,mouthY-.064,mouthZ+.033,.098,.032,.018,0xf9acb6);
+ }else if(avatarExpression==='surprise'){
+   oval(0,mouthY,mouthZ,.085,.124,.035,eyeCol);
+ }else if(avatarExpression==='sleepy'){
+   stroke([[-.072,mouthY+.003,mouthZ],[0,mouthY-.018,mouthZ+.008],[.075,mouthY+.003,mouthZ]],.021);
+ }else{
+   stroke([[-.14,mouthY+.035,mouthZ],[-.075,mouthY-.032,mouthZ+.02],[0,mouthY-.061,mouthZ+.027],[.075,mouthY-.032,mouthZ+.02],[.14,mouthY+.035,mouthZ]],.025);
+ }
+ if(avatarExpression==='sparkle'){
+   for(const dx of [-eyeX,eyeX]){dot(dx+.037,eyeY+.052,eyeZ+.074,.027,0xffffff);dot(dx-.039,eyeY-.017,eyeZ+.073,.016,0xffffff)}
+   for(const x of [-1,1]){
+     stroke([[x*(eyeX+.15),eyeY+.21,eyeZ],[x*(eyeX+.18),eyeY+.29,eyeZ],[x*(eyeX+.21),eyeY+.21,eyeZ]],.014,0xffd16b);
+   }
+ }
+}
+function updateAvatarLabel(){
+ const face=FACE_OPTIONS.find(x=>x.key===avatarExpression)||FACE_OPTIONS[0];
+ $('#avatarIcon').textContent=avatarType==='human'?'🧒':'🥒';
+ $('#avatarName').textContent=(avatarType==='human'?'사람':'초록 오이')+' · '+face.name;
+ const preview=$('#welcomeFacePreview');if(preview)preview.textContent='지금 표정: '+face.emoji+' '+face.name;
+ document.querySelectorAll('[data-face]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.face===avatarExpression)));
+ document.querySelectorAll('[data-avatar-type]').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.avatarType===avatarType)));
+ for(const [type,id] of [['human','humanChoice'],['cucumber','cucumberChoice']]){let b=$('#'+id);if(b)b.setAttribute('aria-pressed',String(avatarType===type))}
+}
+function selectExpression(key){
+ if(!FACE_OPTIONS.some(e=>e.key===key))return;
+ avatarExpression=key;
+ drawAvatarFace();updateAvatarLabel();
+}
+function makeFaceChoices(container){
+ container.replaceChildren();
+ for(const f of FACE_OPTIONS){let b=document.createElement('button');b.type='button';b.className='face-pick';b.dataset.face=f.key;b.setAttribute('aria-pressed',String(f.key===avatarExpression));let icon=document.createElement('span');icon.textContent=f.emoji;let name=document.createElement('strong');name.textContent=f.name;b.append(icon,name);b.addEventListener('click',()=>selectExpression(f.key));container.appendChild(b)}
+}
+function openAvatarCustomizer(){
+ modal('🥒🧒 아바타와 표정 꾸미기','사람 또는 초록 오이 중 하나를 고르고, 표정만 바꿔 봐. 초록 오이의 몸 색깔은 그대로 유지돼.',[], '<div class="customize-heading">1. 아바타 종류</div><div class="type-grid"><button type="button" class="type-pick" data-avatar-type="human">🧒 사람</button><button type="button" class="type-pick" data-avatar-type="cucumber">🥒 초록 오이</button></div><div class="customize-heading">2. 표정 선택</div><div class="expression-grid" id="modalFaceChoices"></div><div class="customize-note">✨ 표정을 선택하면 내 3D 아바타 얼굴에 바로 적용돼. 이동 중에도 변경할 수 있어!</div>');
+ document.querySelectorAll('[data-avatar-type]').forEach(b=>b.addEventListener('click',()=>selectAvatar(b.dataset.avatarType)));
+ makeFaceChoices($('#modalFaceChoices'));updateAvatarLabel();
+}
+function enter(id){room=id;root.clear();animated=[];effects=[];pose='';actionUntil=0;BUILD[id]();if(id!=='plaza')makeReturnDoor();createAvatar();const apos=avatar.position;camera.position.set(apos.x+8,apos.y+8,apos.z+11);camera.lookAt(apos.x,apos.y+1,apos.z-1.5);const info=ROOMS.find(r=>r.id===id);$('#roomTitle').textContent=info.icon+' '+info.name;$('#roomSubtitle').textContent=info.sub;$('#panelTitle').textContent=info.name;$('#panelDesc').textContent=info.desc;$('#actions').replaceChildren();for(const [emoji,label,key] of info.actions){let btn=document.createElement('button');btn.className='act'+(key==='breathe'||key==='dance'?' primary':'');btn.innerHTML=`<span class="aicon">${emoji}</span><span>${label}</span>`;btn.addEventListener('click',()=>act(key));$('#actions').appendChild(btn)}document.querySelectorAll('.room-btn').forEach(btn=>{let b=btn.dataset.id===id;btn.classList.toggle('on',b);btn.setAttribute('aria-current',b?'page':'false')});if(!seen.has(id)){seen.add(id);starCount=Math.min(3,seen.size-1);$('#stars').textContent='⭐ '+starCount+' / 3';if(starCount===3)$('#missionText').textContent='성공! 🌟 오이반의 세 공간을 탐험했어!'}if(soundOn){ambientMode=({class:'calm',fire:'fire',meadow:'birds',plane:'cloud',food:'birds',cafe:'calm',mind:'calm',gym:'mission',party:'party',plaza:'birds'}[id]||'birds');playAmbience()}pressed.clear()}
+for(let item of ROOMS){let b=document.createElement('button');b.className='room-btn';b.dataset.id=item.id;b.innerHTML=`<span class="e">${item.icon}</span><span><b>${item.name}</b><small>${item.sub}</small></span>`;b.addEventListener('click',()=>enter(item.id));$('#roomlist').appendChild(b)}
+renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.26;$('#three').appendChild(renderer.domElement);scene.add(root);scene.add(new THREE.HemisphereLight(0xffffff,0xa7bba3,2.3));let sun=new THREE.DirectionalLight(0xfff1da,2.6);sun.position.set(-8,16,11);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-17;sun.shadow.camera.right=17;sun.shadow.camera.top=17;sun.shadow.camera.bottom=-17;sun.shadow.bias=-.0005;scene.add(sun);camera=new THREE.PerspectiveCamera(38,innerWidth/innerHeight,.1,110);enter('plaza');
+function showToast(msg){$('#toast').textContent=msg;$('#toast').classList.add('show');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>$('#toast').classList.remove('show'),4100)}
+function modal(title,desc,options=[],extra=''){clearInterval(breathTimer);$('#modalTitle').textContent=title;$('#modalDesc').textContent=desc;$('#modalOptions').replaceChildren();$('#modalExtra').innerHTML=extra;for(let [label,fn] of options){const b=document.createElement('button');b.className='option';b.textContent=label;b.onclick=()=>{fn();closeModal()};$('#modalOptions').appendChild(b)}$('#modalWrap').hidden=false}
+function closeModal(){clearInterval(breathTimer);$('#modalWrap').hidden=true}$('#modalClose').onclick=closeModal;$('#modalWrap').addEventListener('click',e=>{if(e.target===$('#modalWrap'))closeModal()});window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+function wave(){pose='wave';actionUntil=clock.elapsedTime+1.6;showToast('👋 안녕! 만나서 반가워!')}
+function travelTo(destination,color,story){scene.background=new THREE.Color(color);scene.fog=new THREE.Fog(color,25,65);let l=makeLabel('✈️ '+destination+' 여행 중',0,5.95,-6.35,{w:5.1,size:40,bg:'#f8fbff',color:'#557f9d'});showToast(story)}
+function moveAvatar(x,z){if(avatar)avatar.position.set(x,.05,z)}
+function sportBall(){const b=sphere(.41,0xf2b6a5,1,1.9,2.5);animated.push({obj:b,kind:'ball',x:1,y:1.9,phase:clock.elapsedTime})} 
+function poseFor(key,secs=2){pose=key;actionUntil=clock.elapsedTime+secs}
+function celebrate(n=25){const color=[0xffb3bb,0xffe4a1,0x9fdfbd,0xb9c9f9,0xf3bbdf];for(let i=0;i<n;i++){let m=box(.12,.06,.10,color[i%5],(Math.random()-.5)*8,5+Math.random()*4,(Math.random()-.5)*7);effects.push({m,v:.9+Math.random(),spin:Math.random()*3})}}
+const messages=['너의 속도로 피어나도 좋아.','작은 친절이 교실을 따뜻하게 해.','조금씩 해내는 오늘도 충분히 멋져.','잘하려고 애쓰는 마음도 쉬어 가도 돼.'];
+function act(key){switch(key){
+case 'hello':return wave();case 'recommend':{let r=ROOMS[1+Math.floor(Math.random()*9)];showToast('🎲 오늘의 추천은 '+r.name+'!');return}
+case 'seat':return modal('🥒 오늘은 어느 자리에 앉을까?','동글동글한 학생 책상 13개 중 원하는 자리를 골라 봐. 실제 자리 배정이나 기록은 저장하지 않아.',Array.from({length:13},(_,i)=>['🪑 '+(i+1)+'번 자리',()=>{let [x,z]=window.oiSeats[i];avatar.position.set(x,0,z+1.05);poseFor('sit',5);showToast('🪑 '+(i+1)+'번 자리에 앉았어!')}]))
+case 'calm':enableSound('calm');return showToast('🎵 오이반의 평화로운 오리지널 배경 선율을 틀었어.')
+case 'mission':enableSound('mission');poseFor('cheer',3);return showToast('🚀 미션 수행! 웅장한 오리지널 모험 리듬으로 시작!')
+case 'praise':return showToast('💚 '+messages[Math.floor(Math.random()*messages.length)])
+case 'firegaze':moveAvatar(2.9,3.8);poseFor('sit',7);enableSound('fire');return showToast('🔥 타닥타닥. 노을빛을 보며 잠깐 불멍 중!')
+case 'marsh':moveAvatar(1.6,2.2);poseFor('roast',5);enableSound('fire');return showToast('🍡 마시멜로를 노릇하게 구웠어! 달콤한 캠핑 시간.')
+case 'tent':moveAvatar(-6.4,-2.8);poseFor('sleep',6);enableSound('forest');return showToast('⛺ 포근한 텐트에서 자연 소리 들으며 쉬는 중!')
+case 'forest':enableSound('fire');return showToast('🎧 장작 타는 소리와 숲의 공기가 함께해.')
+case 'yoga':moveAvatar(-1.5,-1.4);poseFor('yoga',7);enableSound('birds');return showToast('🧘 햇살 요가 시작! 천천히 자세를 바꿔 봐.')
+case 'breathe':return breath()
+case 'picnic':moveAvatar(-.7,4.7);poseFor('sit',6);enableSound('birds');return showToast('🧺 피크닉 돗자리를 펼쳤어. 초록 바람을 느껴 봐!')
+case 'birds':enableSound('birds');return showToast('🐦 새소리와 부드러운 자연의 소리를 켰어.')
+case 'sleep':moveAvatar(-1.8,2);poseFor('sleep',8);enableSound('cloud');return showToast('💤 퍼스트클래스 좌석을 젖히고 구름 위 낮잠!')
+case 'clouds':enableSound('cloud');return showToast('☁️ 창밖으로 하얀 구름이 끝없이 흘러가.')
+case 'travel':return modal('✈️ 어디로 여행 갈래?','여권 없이 떠나는 오이항공 상상 여행! 여행지를 고르면 창밖 이야기가 바뀌어.',[['🇯🇵 일본 · 벚꽃길',()=>travelTo('일본',0xfde5ec,'🌸 일본 여행! 벚꽃빛 하늘이 기다려.')],['🇫🇷 프랑스 · 카페 거리',()=>travelTo('프랑스',0xffefd7,'🥐 프랑스 여행! 따뜻한 거리와 카페가 기다려.')],['🇨🇭 스위스 · 알프스',()=>travelTo('스위스',0xd5f1ed,'🏔️ 스위스 여행! 초록 산봉우리를 떠올려 봐.')],['🇮🇹 이탈리아 · 햇살',()=>travelTo('이탈리아',0xffe0bd,'🍋 이탈리아 여행! 노란 레몬과 햇살의 색감!')],['🇬🇧 영국 · 정원',()=>travelTo('영국',0xe0e8ee,'🌷 영국 여행! 꽃이 피어난 정원을 상상해.')],['🇺🇸 미국 · 도시',()=>travelTo('미국',0xd2dfff,'🌆 미국 여행! 반짝이는 도시의 하늘을 상상해.')]])
+case 'candy':return modal('🍭 어떤 사탕을 고를까?','알록달록 사탕 가게에 오신 걸 환영해!',[['🍓 딸기사탕',()=>showToast('🍓 상큼한 딸기사탕을 골랐어!')],['🍋 레몬사탕',()=>showToast('🍋 새콤한 레몬사탕을 골랐어!')],['🌈 무지개 솜사탕',()=>showToast('🌈 구름처럼 폭신한 솜사탕!')],['🍇 포도 캔디',()=>showToast('🍇 달콤한 포도 캔디!')]])
+case 'choc':return modal('🍫 초콜릿 전문점','가상의 달콤한 초콜릿을 골라 봐.',[['🍫 밀크 초콜릿',()=>showToast('부드러운 밀크 초콜릿 선택!')],['🤎 진한 다크 초콜릿',()=>showToast('진한 카카오 향의 초콜릿 선택!')],['🍓 딸기 초콜릿',()=>showToast('딸기 토핑 초콜릿 선택!')],['🍪 쿠키 초콜릿',()=>showToast('바삭바삭 쿠키 초콜릿 선택!')]])
+case 'dessert':return showToast(['🍰 딸기 생크림 케이크 당첨!','🧁 폭신한 바닐라 컵케이크 당첨!','🍩 알록달록 도넛 당첨!','🍦 레인보우 아이스크림 당첨!'][Math.floor(Math.random()*4)])
+case 'menu':return showToast(['🍜 오늘은 따끈한 국수!','🍕 오늘은 치즈 피자!','🥟 오늘은 바삭한 만두!','🍙 오늘은 귀여운 주먹밥!'][Math.floor(Math.random()*4)])
+case 'drink':return modal('☕ 오이 트리 카페 메뉴','나뭇가지 카페에서 오늘의 음료를 골라 봐.',[['🍓 딸기라떼',()=>showToast('🍓 달콤한 딸기라떼가 나왔어!')],['🍋 레몬에이드',()=>showToast('🍋 상큼한 레몬에이드가 나왔어!')],['🍵 따뜻한 허브티',()=>showToast('🍵 향긋한 허브티가 나왔어!')],['🥛 바닐라 밀크',()=>showToast('🥛 부드러운 바닐라 밀크가 나왔어!')]])
+case 'branch':moveAvatar(5.4,.8);poseFor('sit',6);enableSound('calm');return showToast('🌳 나뭇가지 위 자리에 앉아 풍경을 바라보는 중!')
+case 'cafeWalk':poseFor('wave',2);return showToast('🌷 컬러풀한 나뭇가지 카페를 산책해 봐!')
+case 'feel':return modal('💗 지금 마음은 어떤 색이야?','어떤 감정이든 괜찮아. 정답도 점수도 없어.',[['☀️ 밝고 신나는 마음',()=>showToast('☀️ 이 기분을 충분히 즐겨 봐.')],['🌿 평온한 마음',()=>showToast('🌿 고요함을 잠시 느껴 봐.')],['☁️ 복잡한 마음',()=>showToast('☁️ 지금 당장 정리하지 않아도 괜찮아.')],['🌧️ 조금 지친 마음',()=>showToast('🌧️ 편안하게 쉬어 갈 자리를 마련했어.')]])
+case 'letgo':poseFor('sit',5);return showToast('☁️ 생각이 떠올라도 괜찮아. 구름처럼 지나가게 두자.')
+case 'still':enableSound('calm');poseFor('sit',6);return showToast('🕯️ 따뜻한 빛을 바라보며 잠시 조용히 머물러 봐.')
+case 'dodge':sportBall();poseFor('throw',2.2);return showToast('🏐 부드러운 피구공을 던졌어! 안전하게 즐기는 오이반 놀이!')
+case 'cheer':poseFor('cheer',3);return showToast('📣 오이반 파이팅!! 서로 응원하는 우리가 최고!')
+case 'run':poseFor('run',3);return showToast('🏁 하나, 둘, 셋! 신나게 달려보자!')
+case 'victory':celebrate(35);poseFor('cheer',3);return showToast('🏆 함께해서 더 멋진 오이반 운동회!')
+case 'dance':moveAvatar(0,.2);poseFor('dance',12);enableSound('party');return showToast('💃 아바타 댄스댄스! 직접 만든 파티 리듬을 즐겨 봐!')
+case 'partyMusic':enableSound('party');return showToast('🎶 신나는 오리지널 파티 리듬을 재생해!')
+case 'confetti':celebrate(45);poseFor('cheer',3);return showToast('🎉 꽃가루 팡팡! 오늘의 주인공은 너야!')
+case 'photo':return screenshot();
+ }}
+function breath(){enableSound(room==='meadow'?'birds':'calm');modal('🌬️ 천천히 숨 고르기','편한 자세로 4초 동안 들이마시고, 4초 동안 내쉬어 봐. 힘들면 평소처럼 숨 쉬어도 괜찮아.',[], '<div class="breathe-ring" id="breatheRing">들이마시기</div><div style="text-align:center;color:#8fa48e;font-size:12px" id="breathCount">60초 호흡 가이드 · 강요하지 않아요</div>');let started=Date.now(),isIn=false;function cycle(){if(!$('#breatheRing'))return;let sec=Math.floor((Date.now()-started)/1000);if(sec>=60){clearInterval(breathTimer);$('#breatheRing').textContent='잘했어 🌿';$('#breatheRing').className='breathe-ring';$('#breathCount').textContent='잠시 쉬어 가도 좋아요.';return}let inhale=sec%8<4;$('#breatheRing').textContent=inhale?'들이마시기':'내쉬기';$('#breatheRing').className='breathe-ring '+(inhale?'inhale':'exhale');$('#breathCount').textContent=(60-sec)+'초 남음';}cycle();breathTimer=setInterval(cycle,1000)}
+function selectAvatar(type){
+ if(type!=='human'&&type!=='cucumber')return;
+ avatarType=type;
+ if(avatar){let prev=avatar.position.clone();root.remove(avatar);createAvatar();avatar.position.copy(prev)}
+ updateAvatarLabel();
+}
+function chooseWelcomeType(type){
+ selectAvatar(type);
+ $('#welcomeExpressions').hidden=false;
+ makeFaceChoices($('#welcomeFaceChoices'));
+ updateAvatarLabel();
+}
+$('#humanChoice').onclick=()=>chooseWelcomeType('human');
+$('#cucumberChoice').onclick=()=>chooseWelcomeType('cucumber');
+$('#welcomeEnter').onclick=()=>{
+ $('#welcomeWrap').hidden=true;
+ showToast((avatarType==='human'?'🧒 사람':'🥒 초록 오이')+' 아바타로 입장! '+FACE_OPTIONS.find(x=>x.key===avatarExpression).name+' 표정이야.');
+};
+$('#dressBtn').onclick=openAvatarCustomizer;
+
+$('#helpBtn').onclick=()=>modal('💚 온라인 오이반 이용 안내','아래 방법으로 놀 수 있어. 모든 활동은 개인 화면에서 체험하는 미리보기야.',[], '<div style="font-size:12px;line-height:2;color:#617864">🚪 광장의 실제 문까지 걸어가면 방으로 자동 입장!<br>🎮 방향키 / WASD / 화면 화살표로 이동<br>⌨️ E 키로 근처 문에 들어가기 또는 교실 의자에 앉기<br>🪑 오른쪽 활동 버튼으로 앉기·요가·춤추기<br>🎧 🔇 버튼으로 전체 소리 켜고 끄기<br>📸 사진 버튼으로 현재 화면 저장<br>😊 아바타·표정 버튼에서 얼굴 표정을 다시 바꿀 수 있어<br>🧒 이름·학번·개인정보를 입력하지 않아요<br><b>※ 여러 명 실시간 접속은 아직 구현되지 않았어요.</b></div>');
+function screenshot(){try{renderer.render(scene,camera);let a=document.createElement('a');a.download='오이반-'+room+'.png';a.href=renderer.domElement.toDataURL('image/png');document.body.appendChild(a);a.click();a.remove();showToast('📸 오이반 사진을 저장했어!')}catch(e){showToast('이 브라우저에서는 사진 저장이 지원되지 않아.')}}$('#shotBtn').onclick=screenshot;
+// Original, procedural ambience/sound effects. No copyrighted background recordings are loaded.
+function clearAudio(){for(let t of audioTimers)clearInterval(t);audioTimers=[];for(let n of audioNodes){try{n.stop?.()}catch{}try{n.disconnect?.()}catch{}}audioNodes=[]}
+function sound(){if(!audioContext)audioContext=new (window.AudioContext||window.webkitAudioContext)();audioContext.resume();return audioContext}
+function tone(freq,dur=.24,vol=.019,type='sine',offset=0){if(!soundOn)return;let ctx=sound(),osc=ctx.createOscillator(),gain=ctx.createGain(),now=ctx.currentTime+offset;osc.type=type;osc.frequency.setValueAtTime(freq,now);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(Math.max(.001,vol),now+.04);gain.gain.exponentialRampToValueAtTime(.0001,now+dur);osc.connect(gain).connect(ctx.destination);osc.start(now);osc.stop(now+dur+.03);audioNodes.push(osc)}
+function noise(dur=.3,vol=.018,filterFreq=800){if(!soundOn)return;let ctx=sound(),len=Math.floor(ctx.sampleRate*dur),buf=ctx.createBuffer(1,len,ctx.sampleRate),data=buf.getChannelData(0);for(let i=0;i<len;i++)data[i]=(Math.random()*2-1)*(.5+.5*Math.sin(Math.PI*i/len));let src=ctx.createBufferSource();src.buffer=buf;let filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=filterFreq;let g=ctx.createGain();g.gain.value=vol;src.connect(filter).connect(g).connect(ctx.destination);src.start();audioNodes.push(src)}
+function enableSound(mode){soundOn=true;ambientMode=mode;$('#soundBtn').textContent='🔊';$('#soundBtn').classList.add('audio-on');playAmbience()}
+function playAmbience(){clearAudio();if(!soundOn)return;let mode=ambientMode||({fire:'fire',meadow:'birds',plane:'cloud',party:'party',mind:'calm',class:'calm'}[room]||'birds');ambientMode=mode;const run=()=>{if(!soundOn)return;if(mode==='fire'){noise(.33,.022,1100);if(Math.random()>.5)noise(.08,.013,2700)}else if(mode==='forest'){noise(.9,.013,380);if(Math.random()>.4)tone(750,.14,.012)}else if(mode==='birds'){noise(.75,.009,430);tone(1060+Math.random()*450,.10,.014);tone(1350+Math.random()*380,.13,.010,'sine',.16)}else if(mode==='cloud'){noise(1.4,.012,300);tone(330,.8,.008)}else if(mode==='calm'){for(const f of [261.6,329.6,392,523.2])tone(f,1.4,.010,'sine',(f%100)*.002)}else if(mode==='mission'){[130.8,196,261.6].forEach((f,i)=>tone(f,.33,.028,'triangle',i*.16));noise(.12,.018,900)}else if(mode==='party'){[220,293.7,329.6,392].forEach((f,i)=>tone(f,.20,.022,'triangle',i*.18));noise(.12,.021,1400)}};run();audioTimers.push(setInterval(run,mode==='party'?880:mode==='mission'?950:mode==='calm'?2500:mode==='birds'?1600:mode==='fire'?900:1600))}
+$('#soundBtn').onclick=()=>{if(soundOn){soundOn=false;clearAudio();$('#soundBtn').textContent='🔇';$('#soundBtn').classList.remove('audio-on');showToast('🔇 소리를 껐어.')}else{enableSound(ambientMode||'birds');showToast('🔊 소리를 켰어.')}};
+// 산책형 3D 이동: 문 앞까지 직접 걸어가면 방이 바뀝니다.
+const keyDirs={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right',W:'up',A:'left',S:'down',D:'right'};
+function nearestInteractable(){
+ if(!avatar)return null;
+ const p=avatar.position;
+ if(room==='plaza'){
+   let best=null,dist=Infinity;
+   for(const gate of portalSpots){const d=Math.hypot(p.x-gate.x,p.z-gate.z);if(d<dist){best=gate;dist=d}}
+   if(best&&dist<2.15)return {kind:'enter',id:best.id,d:dist,label:'🚪 '+ROOMS.find(r=>r.id===best.id).name+' 입장'};
+ }else{
+   const d=Math.hypot(p.x,p.z-8.05);
+   if(d<2.25)return {kind:'exit',d,label:'🚪 광장으로 나가기'};
+   if(room==='class'&&window.oiSeats){
+     let best=-1,dist=Infinity;
+     window.oiSeats.forEach(([x,z],i)=>{let dd=Math.hypot(p.x-x,p.z-(z+1.07));if(dd<dist){dist=dd;best=i}});
+     if(best>=0&&dist<1.48)return {kind:'seat',i:best,d:dist,label:'🪑 '+(best+1)+'번 자리 앉기'};
+   }
+ }
+ return null;
+}
+function interact(){
+ const n=nearestInteractable();
+ if(!n){showToast('🌿 문이나 교실 의자 가까이 걸어가 봐!');return}
+ if(n.kind==='enter'){enter(n.id);portalCooldown=clock.elapsedTime+1.15;showToast('🚪 '+ROOMS.find(r=>r.id===n.id).name+'에 들어왔어!');return}
+ if(n.kind==='exit'){enter('plaza');portalCooldown=clock.elapsedTime+1.15;showToast('🏡 비밀정원 광장으로 돌아왔어!');return}
+ if(n.kind==='seat'){let [x,z]=window.oiSeats[n.i];avatar.position.set(x,.05,z+1.08);poseFor('sit',8);showToast('🪑 '+(n.i+1)+'번 자리에 앉았어!');}
+}
+window.addEventListener('keydown',e=>{
+ if(!$('#welcomeWrap').hidden||!$('#modalWrap').hidden)return;
+ if(e.key==='e'||e.key==='E'||e.key==='Enter'&&document.activeElement===document.body){if(!e.repeat){e.preventDefault();interact()}return}
+ const d=keyDirs[e.key];if(d){e.preventDefault();pressed.add(d)}
+});
+window.addEventListener('keyup',e=>{let d=keyDirs[e.key];if(d)pressed.delete(d)});
+window.addEventListener('blur',()=>pressed.clear());$('#interactBtn').onclick=interact;
+document.querySelectorAll('[data-d]').forEach(btn=>{let d=btn.dataset.d;btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.setPointerCapture(e.pointerId);pressed.add(d)});for(let event of ['pointerup','pointercancel','lostpointercapture'])btn.addEventListener(event,()=>pressed.delete(d))});
+let pointerX=0,orbit=0,zoom=1;
+renderer.domElement.addEventListener('pointerdown',e=>{pointerX=e.clientX});
+renderer.domElement.addEventListener('pointerup',e=>{if(Math.abs(e.clientX-pointerX)>12){orbit=Math.max(-.75,Math.min(.75,orbit+(e.clientX-pointerX)*.002));}});
+renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(.65,Math.min(1.7,zoom+e.deltaY*.001))},{passive:false});
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(.048,clock.getDelta()),time=clock.elapsedTime;
+ for(const a of animated){if(a.kind==='flame'){a.obj.scale.y=.77+.23*Math.sin(time*7+a.phase);a.obj.position.y=a.y+.12*Math.sin(time*5+a.phase)}else if(a.kind==='float'){a.obj.position.y=a.y+.12*Math.sin(time*1.5+a.phase)}else if(a.kind==='spin'){a.obj.rotation.y+=dt*.65}else if(a.kind==='cloud'){a.obj.position.x=a.x+.35*Math.sin(time*.3+a.phase)}else if(a.kind==='ball'){let age=time-a.phase;a.obj.position.set(a.x-age*3.8,Math.max(.46,a.y+Math.sin(age*4)*.8),2.5-age*2);if(age>2.8)a.obj.visible=false}}
+ for(const e of effects){e.m.position.y-=dt*e.v*2;e.m.rotation.z+=dt*e.spin;if(e.m.position.y<.22)e.m.visible=false}
+ if(avatar){
+  const allowed=$('#welcomeWrap').hidden&&$('#modalWrap').hidden;
+  let dx=allowed?(pressed.has('right')?1:0)-(pressed.has('left')?1:0):0,
+      dz=allowed?(pressed.has('down')?1:0)-(pressed.has('up')?1:0):0,
+      moving=dx!==0||dz!==0;
+  if(moving){const l=Math.hypot(dx,dz);dx/=l;dz/=l;
+   const lim=room==='plaza'?10.8:8.5;
+   avatar.position.x=Math.max(-lim,Math.min(lim,avatar.position.x+dx*dt*3.8));
+   avatar.position.z=Math.max(room==='plaza'?-10.8:-6.5,Math.min(room==='plaza'?10.8:9.2,avatar.position.z+dz*dt*3.8));
+   avatarParts.body.rotation.y=Math.atan2(dx,dz);
+  }else avatarParts.body.rotation.y+=(0-avatarParts.body.rotation.y)*Math.min(1,dt*4.6);
+  avatarParts.body.position.y=moving?.06*Math.sin(time*16):.03*Math.sin(time*2.3);
+  for(let i=0;i<2;i++){avatarParts.legs[i].rotation.x=moving?Math.sin(time*13+i*Math.PI)*.5:0;avatarParts.arms[i].rotation.x=moving?Math.sin(time*13+i*Math.PI)*.26:0;avatarParts.arms[i].rotation.z=0}
+  if(time<actionUntil){if(pose==='wave'){avatarParts.arms[1].rotation.z=-.9+Math.sin(time*14)*.25}else if(pose==='sit'){avatarParts.body.position.y=-.38;avatarParts.legs.forEach(l=>l.rotation.x=-.95)}else if(pose==='sleep'){avatarParts.body.rotation.z=.65;avatarParts.body.position.y=-.3}else if(pose==='yoga'){avatarParts.arms[0].rotation.z=2.3;avatarParts.arms[1].rotation.z=-2.3}else if(pose==='dance'){avatarParts.body.rotation.z=Math.sin(time*8)*.22;avatarParts.arms[0].rotation.z=1.5*Math.sin(time*7);avatarParts.arms[1].rotation.z=-1.5*Math.sin(time*7)}else if(pose==='cheer'){avatarParts.arms[0].rotation.z=2.4;avatarParts.arms[1].rotation.z=-2.4}else if(pose==='throw'||pose==='roast'){avatarParts.arms[1].rotation.z=-1.1;avatarParts.arms[1].rotation.x=-.9}else if(pose==='run'){avatarParts.body.position.y=.16*Math.abs(Math.sin(time*13));avatarParts.arms[0].rotation.x=Math.sin(time*13);avatarParts.arms[1].rotation.x=-Math.sin(time*13)}}else{pose='';avatarParts.body.rotation.z=0}
+  // 입구를 통과하면 페이지 전환 없이 3D 공간 안으로 입장.
+  const near=allowed?nearestInteractable():null;
+  const hint=near?'[ E ] '+near.label+' · 문으로 걸어가도 입장':'';
+  if(lastHint!==hint){$('#nearHint').hidden=!hint;$('#nearHint').textContent=hint;lastHint=hint}
+  if(near&&allowed&&time>portalCooldown&&(near.kind==='enter'||near.kind==='exit')&&near.d<.78){interact()}
+  const offX=8.0*Math.cos(orbit)-11*Math.sin(orbit),offZ=8.0*Math.sin(orbit)+11*Math.cos(orbit);
+  const target=new THREE.Vector3(avatar.position.x+offX*zoom,avatar.position.y+7.5*zoom,avatar.position.z+offZ*zoom);
+  camera.position.lerp(target,Math.min(1,dt*3.5));
+  camera.lookAt(avatar.position.x,avatar.position.y+1.35,avatar.position.z-1.9);
+ }
+ renderer.render(scene,camera);
+}
+requestAnimationFrame(animate);
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+// 첫 입장 시 아바타를 선택하면 이용 방법이 표시됩니다.
+</script>
+</body>
+</html>
